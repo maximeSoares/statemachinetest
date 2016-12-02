@@ -4,13 +4,30 @@ import java.util.ArrayList;
 
 public class FlowContext {
 	private boolean isClient;
-	private ArrayList<States> history;
-	public States current;
+	private boolean isProspect;
+	private ArrayList<StateStatus> history;
 	
-	public FlowContext(boolean isClient) {
+	public FlowContext() {
 		super();
-		this.isClient = isClient;
+		this.isClient = false;
+		this.isProspect = false;
 		this.history = new ArrayList<>();
+		this.history.add(new StateStatus(States.Recherche, Status.Debuter));
+		this.history.add(new StateStatus(States.CreationProspect, Status.Debuter));
+		this.history.add(new StateStatus(States.Magasinage, Status.Intoucher));
+		this.history.add(new StateStatus(States.ModeLivraison, Status.Intoucher));
+		this.history.add(new StateStatus(States.Technicien, Status.Intoucher));
+		this.history.add(new StateStatus(States.LivraisonEtRecuperationEquipement, Status.Intoucher));
+		this.history.add(new StateStatus(States.Sommaire, Status.Intoucher));
+		this.history.add(new StateStatus(States.CreationClient, Status.Debuter));
+		this.history.add(new StateStatus(States.Prepaiement, Status.Intoucher));
+		this.history.add(new StateStatus(States.Equifax, Status.Intoucher));
+		this.history.add(new StateStatus(States.Paiement, Status.Intoucher));
+		this.history.add(new StateStatus(States.ConfiguarationService, Status.Intoucher));
+		this.history.add(new StateStatus(States.ConfiguarationCompte, Status.Intoucher));
+		this.history.add(new StateStatus(States.DefinirIndividusAuCompte, Status.Intoucher));
+		this.history.add(new StateStatus(States.ModeFacturation, Status.Intoucher));
+		
 	}
 
 	public boolean isClient() {
@@ -22,24 +39,25 @@ public class FlowContext {
 	}
 	
 	public boolean isProspect() {
-		return !isClient;
+		return isProspect;
 	}
 
-	public void setProspect(boolean isClient) {
-		this.isClient = !isClient;
+	public void setProspect(boolean isProspect) {
+		this.isProspect = isProspect;
 	}
 
-	public ArrayList<States> getHistory() {
+	public ArrayList<StateStatus> getHistory() {
 		return history;
 	}
 
-	public void setHistory(ArrayList<States> history) {
+	public void setHistory(ArrayList<StateStatus> history) {
 		this.history = history;
 	}
 
+
 	@Override
 	public String toString() {
-		return "FlowContext [isClient=" + isClient + ", history=" + history + ", current=" + current + "]";
+		return "FlowContext [isClient=" + isClient + ", isProspect=" + isProspect + ", history=" + history + "]";
 	}
 
 

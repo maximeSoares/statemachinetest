@@ -1,16 +1,15 @@
 package com.samplestatemachine.statemachine;
 
-import java.util.HashSet;
-import java.util.Set;
+import java.util.ArrayList;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.statemachine.StateMachine;
-import org.springframework.statemachine.transition.Transition;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.samplestatemachine.bean.Events;
 import com.samplestatemachine.bean.FlowContext;
+import com.samplestatemachine.bean.StateStatus;
 import com.samplestatemachine.bean.States;
 
 
@@ -20,9 +19,11 @@ public class Controller {
 	private StateMachine<States, Events> stateMachine;
 
 	@RequestMapping("/next")
-	public States publisNext(){
-        stateMachine.sendEvent(Events.NEXT);
-		return stateMachine.getState().getId();
+	public StateStatus publisNext(){
+        stateMachine.sendEvent(Events.VALID);
+		FlowContext flowContext = stateMachine.getExtendedState().get("flowContext", FlowContext.class);
+		stateMachine.sendEvent(Events.NEXT);
+		return flowContext.getHistory().get(stateMachine.getState().getId().getIndex());
 	}
 	
 	@RequestMapping("/client")
@@ -43,27 +44,39 @@ public class Controller {
 		return stateMachine.getState().getId();
 	}
 	
-	@RequestMapping("/current")
-	public FlowContext publisCurrent(){
-		FlowContext flowContext = stateMachine.getExtendedState().get("flowContext", FlowContext.class);
-		flowContext.current = stateMachine.getState().getId();
-		return flowContext;
+	@RequestMapping("/livraison")
+	public States publisLivraison(){
+        stateMachine.sendEvent(Events.VIEW_Livraison);
+		return stateMachine.getState().getId();
 	}
 	
-	@RequestMapping("/list")
-	public Set<States> publisList(){
-        Set<States> list = new HashSet<>();
-		for (Transition<States, Events> transition : stateMachine.getTransitions()) {
-			if(transition.getSource().equals(stateMachine.getState())) {
-				list.add(transition.getTarget().getId());
-			}
-		}
-		
-		return list;
+	@RequestMapping("/technicien")
+	public States publisTechnicien(){
+        stateMachine.sendEvent(Events.VIEW_Technicien);
+		return stateMachine.getState().getId();
 	}
 	
 	@RequestMapping("/complet")
-	public boolean publisComplet(){
+	public StateStatus publisCompleted(){
+		stateMachine.sendEvent(Events.VALID);
+		FlowContext flowContext = stateMachine.getExtendedState().get("flowContext", FlowContext.class);
+		return flowContext.getHistory().get(stateMachine.getState().getId().getIndex());
+	}
+	
+	@RequestMapping("/current")
+	public StateStatus publisCurrent(){
+		FlowContext flowContext = stateMachine.getExtendedState().get("flowContext", FlowContext.class);
+		return flowContext.getHistory().get(stateMachine.getState().getId().getIndex());
+	}
+	
+	@RequestMapping("/list")
+	public ArrayList<StateStatus> publisList(){
+		FlowContext flowContext = stateMachine.getExtendedState().get("flowContext", FlowContext.class);
+		return flowContext.getHistory();
+	}
+	
+	@RequestMapping("/finish")
+	public boolean publisfinish(){
 		return stateMachine.isComplete();
 	}
 }

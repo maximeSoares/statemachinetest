@@ -4,5 +4,9 @@ public enum Events {
 	VIEW_CreationClient,
 	VIEW_CreationProspect,
 	VIEW_Magasinage,
-	NEXT
+	VIEW_Livraison,
+	VIEW_Technicien,
+	VIEW_RECHERCHE,
+	NEXT,
+	VALID
 }
